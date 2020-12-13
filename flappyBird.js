@@ -1,6 +1,36 @@
 var cvs = document.getElementById("canvas");
 var ctx = cvs.getContext("2d");
 
+//stopwatch
+var minutesLabel = document.getElementById("minutes");
+var secondsLabel = document.getElementById("seconds");
+var totalSeconds = 0;
+        setInterval(setTime, 1000);
+
+        function setTime()
+        {
+            ++totalSeconds;
+            secondsLabel.innerHTML = pad(totalSeconds%60);
+            minutesLabel.innerHTML = pad(parseInt(totalSeconds/60));
+        }
+
+        function pad(val)
+        {
+            var valString = val + "";
+            if(valString.length < 2)
+            {
+                return "0" + valString;
+            }
+            else
+            {
+                return valString;
+            }
+        }
+    
+       
+       
+        
+
 // load images
 
 var bird = new Image();
@@ -24,8 +54,7 @@ var constant;
 var bX = 10;
 var bY = 150;
 
-var gravity = 1.5;
-
+var gravity = 1;
 var score = 0;
 
 // audio files
@@ -55,6 +84,7 @@ pipe[0] = {
 };
 
 // draw images
+var prevSec = 0;
 
 function draw(){
     
@@ -86,9 +116,15 @@ function draw(){
             score++;
             scor.play();
         }
-        
-        
     }
+
+    var currSec = parseInt(secondsLabel.innerHTML);
+
+    if(currSec%30 === 0 && currSec >0 && currSec != prevSec){
+        gravity+=1;
+        prevSec = currSec;
+    }
+    
 
     ctx.drawImage(fg,0,cvs.height - fg.height);
     
@@ -99,17 +135,12 @@ function draw(){
     ctx.fillStyle = "#000";
     ctx.font = "20px Verdana";
     ctx.fillText("Score : "+score,10,cvs.height-20);
-    
+    ctx.fillText("Level : "+gravity,100,cvs.height-450);
     requestAnimationFrame(draw);
     
 }
 
 draw();
-
-
-
-
-
 
 
 
